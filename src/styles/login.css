@@ -1,0 +1,938 @@
+.login-page {
+  width: 100%;
+  height: 100vh;
+
+  display: grid;
+  grid-template-columns: 48% 52%;
+
+  overflow: hidden;
+}
+
+/* ============================
+   LADO ESQUERDO
+============================ */
+
+.login-brand {
+  width: 100%;
+  height: 100vh;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 68% 65%,
+      rgba(45, 112, 82, 0.35),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 10% 5%,
+      rgba(202, 151, 73, 0.08),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #074335 0%,
+      #03372b 48%,
+      #012a21 100%
+    );
+
+  color: #f7ebd0;
+}
+
+/* CÍRCULO SUPERIOR */
+
+.login-brand::before {
+  content: "";
+
+  position: absolute;
+
+  top: -155px;
+  left: -175px;
+
+  width: 430px;
+  height: 430px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(211, 166, 91, 0.25);
+
+  pointer-events: none;
+}
+
+/* CÍRCULO INFERIOR */
+
+.login-brand::after {
+  content: "";
+
+  position: absolute;
+
+  bottom: -310px;
+  right: -220px;
+
+  width: 650px;
+  height: 650px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(211, 166, 91, 0.28);
+
+  pointer-events: none;
+}
+
+/* MARCA PRINCIPAL */
+
+.brand-main {
+  position: relative;
+  z-index: 2;
+
+  transform: translateY(-25px);
+
+  text-align: center;
+}
+
+.brand-rose {
+  margin-bottom: 10px;
+
+  font-size: 58px;
+  line-height: 1;
+
+  filter:
+    drop-shadow(
+      0 8px 14px
+      rgba(0, 0, 0, 0.22)
+    );
+}
+
+.brand-main h1 {
+  margin: 0;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: clamp(
+    3.4rem,
+    4.4vw,
+    4.9rem
+  );
+
+  line-height: 0.95;
+
+  font-weight: 500;
+
+  letter-spacing: 0.08em;
+
+  color: #e7c382;
+}
+
+.brand-subtitle {
+  display: block;
+
+  margin-top: 14px;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 0.78rem;
+
+  font-weight: 600;
+
+  letter-spacing: 0.34em;
+
+  color: #e3c994;
+}
+
+.brand-slogan {
+  margin-top: 28px;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 2rem;
+
+  line-height: 1.08;
+
+  font-style: italic;
+
+  color: #dda255;
+}
+
+.brand-slogan span {
+  color: #e5b669;
+}
+
+/* TEXTO LATERAL */
+
+.brand-side-text {
+  position: absolute;
+
+  top: 44%;
+  left: 40px;
+
+  transform: translateY(-50%);
+
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 0.66rem;
+
+  letter-spacing: 0.32em;
+
+  color: rgba(255, 244, 216, 0.72);
+}
+
+.brand-side-line {
+  width: 34px;
+  height: 1px;
+
+  margin-top: 8px;
+
+  background: #d79b4d;
+}
+
+.brand-side-heart {
+  margin-top: 2px;
+
+  color: #dca559;
+
+  font-size: 1.35rem;
+
+  letter-spacing: normal;
+}
+
+/* MENSAGEM INFERIOR */
+
+.brand-footer-message {
+  position: absolute;
+
+  bottom: 28px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  z-index: 2;
+
+  width: 235px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 11px 18px;
+
+  border: 1px solid rgba(220, 169, 87, 0.55);
+
+  border-radius: 10px;
+
+  font-family: "Cormorant Garamond", serif;
+
+  color: #efd6a4;
+}
+
+.brand-footer-message strong {
+  font-size: 1rem;
+
+  font-weight: 500;
+}
+
+.brand-footer-message span {
+  font-size: 0.9rem;
+}
+
+.brand-footer-message b {
+  margin-top: 1px;
+
+  color: #dc9e48;
+
+  font-size: 1rem;
+}
+
+/* ============================
+   LADO DIREITO
+============================ */
+
+.login-content {
+  width: 100%;
+  height: 100vh;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    78px
+    55px
+    30px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 0 0,
+      rgba(205, 157, 80, 0.07),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #fffdf8,
+      #faf5eb
+    );
+}
+
+/* ============================
+   DECORAÇÕES
+============================ */
+
+/*
+   Os símbolos gigantes estavam
+   atrapalhando a composição.
+   Depois podemos substituir por
+   folhas SVG/imagens reais.
+*/
+
+.login-decoration {
+  display: none;
+}
+
+/* ============================
+   TEXTO SUPERIOR
+============================ */
+
+.login-location {
+  position: absolute;
+
+  top: 22px;
+  right: 38px;
+
+  width: 190px;
+
+  z-index: 5;
+
+  text-align: right;
+
+  color: #566b65;
+}
+
+.login-location span {
+  display: block;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 0.62rem;
+
+  letter-spacing: 0.28em;
+
+  white-space: nowrap;
+}
+
+.login-location div {
+  width: 48px;
+  height: 1px;
+
+  margin:
+    8px
+    0
+    8px
+    auto;
+
+  background: #d3a157;
+}
+
+.login-location p {
+  margin: 0;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 0.6rem;
+
+  line-height: 1.5;
+
+  letter-spacing: 0.19em;
+}
+
+/* ============================
+   WRAPPER DO LOGIN
+============================ */
+
+.login-wrapper {
+  width: min(100%, 540px);
+
+  position: relative;
+
+  z-index: 2;
+
+  margin-top: 5px;
+}
+
+/* ============================
+   CARD
+============================ */
+
+.login-card {
+  width: 100%;
+
+  padding:
+    34px
+    40px
+    30px;
+
+  border: 1px solid rgba(204, 158, 89, 0.35);
+
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.72);
+
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 20px 55px
+    rgba(44, 59, 52, 0.07);
+}
+
+/* ============================
+   CABEÇALHO DO CARD
+============================ */
+
+.login-header {
+  margin-bottom: 25px;
+
+  text-align: center;
+}
+
+.login-leaf {
+  display: block;
+
+  margin-bottom: 4px;
+
+  font-size: 1.55rem;
+
+  line-height: 1;
+
+  color: #cd7e32;
+}
+
+.welcome-text {
+  display: block;
+
+  margin-bottom: 7px;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 0.71rem;
+
+  font-weight: 600;
+
+  letter-spacing: 0.35em;
+
+  color: #294c42;
+}
+
+.login-header h2 {
+  margin: 0;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 2.7rem;
+
+  font-weight: 600;
+
+  line-height: 1;
+
+  color: #0b382d;
+}
+
+.login-header p {
+  margin-top: 10px;
+
+  font-size: 0.72rem;
+
+  line-height: 1.55;
+
+  color: #6a7873;
+}
+
+/* ============================
+   FORM
+============================ */
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+
+  color: #233f37;
+}
+
+.input-container {
+  width: 100%;
+  height: 51px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 15px;
+
+  border: 1px solid #d0d5d2;
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.82);
+
+  color: #49645c;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.input-container:hover {
+  border-color: #b7c2bd;
+}
+
+.input-container:focus-within {
+  border-color: #0a654e;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(10, 101, 78, 0.07);
+}
+
+.input-container input {
+  width: 100%;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  font-size: 0.82rem;
+
+  color: #183c32;
+}
+
+.input-container input::placeholder {
+  color: #a0aaa6;
+}
+
+/* BOTÃO MOSTRAR SENHA */
+
+.password-toggle {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 4px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #587069;
+
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #0b5946;
+}
+
+/* ============================
+   OPÇÕES
+============================ */
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin:
+    5px
+    0
+    21px;
+}
+
+.remember-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  cursor: pointer;
+
+  font-size: 0.74rem;
+
+  color: #415a53;
+}
+
+.remember-option input {
+  width: 16px;
+  height: 16px;
+
+  cursor: pointer;
+
+  accent-color: #075540;
+}
+
+.forgot-button {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  font-size: 0.72rem;
+
+  font-weight: 600;
+
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  color: #07513f;
+
+  transition: color 0.2s ease;
+}
+
+.forgot-button:hover {
+  color: #b56d2b;
+}
+
+/* ============================
+   ERRO
+============================ */
+
+.login-error {
+  margin:
+    -5px
+    0
+    15px;
+
+  padding: 10px 13px;
+
+  border: 1px solid #efcbc5;
+
+  border-radius: 8px;
+
+  background: #fff1ee;
+
+  color: #a43a2d;
+
+  font-size: 0.73rem;
+}
+
+/* ============================
+   BOTÃO ENTRAR
+============================ */
+
+.login-button {
+  width: 100%;
+  height: 53px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #064635,
+      #00624b
+    );
+
+  color: #fff8e8;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 1.33rem;
+
+  box-shadow:
+    0 10px 25px
+    rgba(0, 78, 59, 0.16);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.login-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  filter: brightness(1.03);
+
+  box-shadow:
+    0 14px 30px
+    rgba(0, 78, 59, 0.22);
+}
+
+.login-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.7;
+}
+
+/* ============================
+   DIVISOR
+============================ */
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  margin:
+    25px
+    0
+    17px;
+}
+
+.login-divider span {
+  flex: 1;
+
+  height: 1px;
+
+  background:
+    rgba(210, 157, 78, 0.62);
+}
+
+.login-divider b {
+  color: #d3903c;
+
+  font-size: 1.3rem;
+
+  font-weight: 400;
+}
+
+/* ============================
+   SEGURANÇA
+============================ */
+
+.security-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 11px;
+
+  color: #5d716b;
+}
+
+.security-info svg {
+  flex-shrink: 0;
+}
+
+.security-info div {
+  display: flex;
+  flex-direction: column;
+
+  font-size: 0.64rem;
+
+  line-height: 1.4;
+}
+
+.security-info strong {
+  margin-bottom: 2px;
+
+  font-weight: 600;
+}
+
+/* ============================
+   FRASE INFERIOR
+============================ */
+
+.login-quote {
+  margin-top: 17px;
+
+  text-align: center;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 1.3rem;
+
+  line-height: 1;
+
+  font-style: italic;
+
+  color: #bf7128;
+}
+
+.login-quote span {
+  color: #d28e3c;
+}
+
+/* ============================
+   RESPONSIVIDADE
+============================ */
+
+@media (max-width: 1200px) {
+  .login-page {
+    grid-template-columns: 44% 56%;
+  }
+
+  .brand-main h1 {
+    font-size: 3.8rem;
+  }
+
+  .brand-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .brand-slogan {
+    font-size: 1.75rem;
+  }
+
+  .brand-side-text {
+    left: 25px;
+  }
+
+  .login-content {
+    padding-left: 35px;
+    padding-right: 35px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .login-page {
+    grid-template-columns: 40% 60%;
+  }
+
+  .brand-side-text {
+    display: none;
+  }
+
+  .brand-main h1 {
+    font-size: 3.3rem;
+  }
+
+  .brand-subtitle {
+    font-size: 0.61rem;
+
+    letter-spacing: 0.27em;
+  }
+
+  .brand-slogan {
+    font-size: 1.55rem;
+  }
+
+  .brand-footer-message {
+    width: 210px;
+  }
+
+  .login-content {
+    padding:
+      78px
+      28px
+      25px;
+  }
+}
+
+@media (max-width: 850px) {
+  .login-page {
+    display: block;
+
+    height: auto;
+    min-height: 100vh;
+
+    overflow: auto;
+  }
+
+  .login-brand {
+    display: none;
+  }
+
+  .login-content {
+    width: 100%;
+    min-height: 100vh;
+    height: auto;
+
+    padding:
+      80px
+      25px
+      35px;
+  }
+
+  .login-location {
+    top: 22px;
+    right: 25px;
+  }
+}
+
+@media (max-width: 550px) {
+  .login-content {
+    padding:
+      30px
+      16px;
+  }
+
+  .login-location {
+    display: none;
+  }
+
+  .login-wrapper {
+    width: 100%;
+
+    margin-top: 0;
+  }
+
+  .login-card {
+    padding:
+      30px
+      22px
+      25px;
+
+    border-radius: 16px;
+  }
+
+  .login-header {
+    margin-bottom: 24px;
+  }
+
+  .login-header h2 {
+    font-size: 2.25rem;
+  }
+
+  .login-header p br {
+    display: none;
+  }
+
+  .login-options {
+    gap: 15px;
+  }
+
+  .login-quote {
+    margin-top: 18px;
+
+    font-size: 1.15rem;
+  }
+}
