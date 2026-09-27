@@ -3,6 +3,11 @@ import { useMemo, useState } from "react";
 import {
   ArrowRight,
   CalendarDays,
+  Flower2,
+  Gem,
+  Leaf,
+  Palette,
+  Star,
   Gift,
   Heart,
   MapPin,
@@ -18,9 +23,7 @@ import {
   X,
 } from "lucide-react";
 
-/* =========================================================
-   PRODUTOS PADRÃO
-========================================================= */
+/* PRODUTOS PADRÃO */
 
 const fallbackProducts = [
   {
@@ -70,9 +73,7 @@ const fallbackProducts = [
   },
 ];
 
-/* =========================================================
-   CATEGORIAS
-========================================================= */
+/* CATEGORIAS */
 
 const categories = [
   {
@@ -110,159 +111,114 @@ function normalizeCategory(value = "") {
     .toLowerCase();
 }
 
+/* RECORTES DECORATIVOS DO ESBOÇO */
+
+function DetailArt({ viewBox, className, label }) {
+  return (
+    <svg
+      className={"rd-art " + className}
+      viewBox={viewBox}
+      preserveAspectRatio="xMidYMid slice"
+      role={label ? "img" : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : true}
+      focusable="false"
+    >
+      <image
+        href="/rosalina-home-reference.png.jpeg"
+        width="1055"
+        height="1491"
+      />
+    </svg>
+  );
+}
+
 export default function HomeClientes() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cart, setCart] = useState([]);
 
-  const [selectedCategory, setSelectedCategory] =
-    useState("Todos");
-
-  const [searchTerm, setSearchTerm] =
-    useState("");
-
-  const [cartOpen, setCartOpen] =
-    useState(false);
-
-  const [cart, setCart] =
-    useState([]);
-
-  /* =======================================================
-     PRODUTOS
-  ======================================================= */
+  /* PRODUTOS */
 
   const products = useMemo(() => {
     try {
-      const saved =
-        localStorage.getItem("rosalina_products");
+      const saved = localStorage.getItem("rosalina_products");
 
       if (!saved) {
         return fallbackProducts;
       }
 
-      const parsed =
-        JSON.parse(saved);
+      const parsed = JSON.parse(saved);
 
       if (!Array.isArray(parsed)) {
         return fallbackProducts;
       }
 
-      const activeProducts =
-        parsed.filter(
-          (product) =>
-            product.status !== "inactive"
-        );
+      const activeProducts = parsed.filter(
+        (product) => product.status !== "inactive"
+      );
 
-      return activeProducts.length
-        ? activeProducts
-        : fallbackProducts;
+      return activeProducts.length ? activeProducts : fallbackProducts;
     } catch {
       return fallbackProducts;
     }
   }, []);
 
-  /* =======================================================
-     FILTROS
-  ======================================================= */
+  /* FILTROS */
 
-  const filteredProducts =
-    useMemo(() => {
-      return products.filter(
-        (product) => {
-          const category =
-            normalizeCategory(
-              product.category
-            );
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const category = normalizeCategory(product.category);
+      const selected = normalizeCategory(selectedCategory);
 
-          const selected =
-            normalizeCategory(
-              selectedCategory
-            );
+      const matchesCategory =
+        selectedCategory === "Todos" || category === selected;
 
-          const matchesCategory =
-            selectedCategory === "Todos" ||
-            category === selected;
+      const search = searchTerm.trim().toLowerCase();
 
-          const search =
-            searchTerm
-              .trim()
-              .toLowerCase();
+      const name = String(product.name || "").toLowerCase();
+      const description = String(product.description || "").toLowerCase();
+      const productCategory = String(product.category || "").toLowerCase();
 
-          const name =
-            String(
-              product.name || ""
-            ).toLowerCase();
+      const matchesSearch =
+        search === "" ||
+        name.includes(search) ||
+        description.includes(search) ||
+        productCategory.includes(search);
 
-          const description =
-            String(
-              product.description || ""
-            ).toLowerCase();
+      return matchesCategory && matchesSearch;
+    });
+  }, [products, selectedCategory, searchTerm]);
 
-          const productCategory =
-            String(
-              product.category || ""
-            ).toLowerCase();
+  /* SACOLA */
 
-          const matchesSearch =
-            search === "" ||
-            name.includes(search) ||
-            description.includes(search) ||
-            productCategory.includes(search);
+  const cartQuantity = cart.reduce(
+    (total, item) => total + Number(item.quantity || 0),
+    0
+  );
 
-          return (
-            matchesCategory &&
-            matchesSearch
-          );
-        }
-      );
-    }, [
-      products,
-      selectedCategory,
-      searchTerm,
-    ]);
+  const cartTotal = cart.reduce(
+    (total, item) =>
+      total + Number(item.price || 0) * Number(item.quantity || 0),
+    0
+  );
 
-  /* =======================================================
-     SACOLA
-  ======================================================= */
-
-  const cartQuantity =
-    cart.reduce(
-      (total, item) =>
-        total +
-        Number(item.quantity || 0),
-      0
-    );
-
-  const cartTotal =
-    cart.reduce(
-      (total, item) =>
-        total +
-        Number(item.price || 0) *
-          Number(item.quantity || 0),
-      0
-    );
-
-  /* =======================================================
-     HELPERS
-  ======================================================= */
+  /* HELPERS */
 
   function formatCurrency(value) {
-    return new Intl.NumberFormat(
-      "pt-BR",
-      {
-        style: "currency",
-        currency: "BRL",
-      }
-    ).format(
-      Number(value) || 0
-    );
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(Number(value) || 0);
   }
 
   function scrollToSection(id) {
-    document
-      .getElementById(id)
-      ?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    document.getElementById(id)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
 
     setMenuOpen(false);
   }
@@ -278,24 +234,18 @@ export default function HomeClientes() {
 
   function addToCart(product) {
     setCart((current) => {
-      const existing =
-        current.find(
-          (item) =>
-            String(item.id) ===
-            String(product.id)
-        );
+      const existing = current.find(
+        (item) => String(item.id) === String(product.id)
+      );
 
       if (existing) {
-        return current.map(
-          (item) =>
-            String(item.id) ===
-            String(product.id)
-              ? {
-                  ...item,
-                  quantity:
-                    item.quantity + 1,
-                }
-              : item
+        return current.map((item) =>
+          String(item.id) === String(product.id)
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+              }
+            : item
         );
       }
 
@@ -311,64 +261,40 @@ export default function HomeClientes() {
     setCartOpen(true);
   }
 
-  function changeQuantity(
-    productId,
-    amount
-  ) {
+  function changeQuantity(productId, amount) {
     setCart((current) =>
       current
         .map((item) => {
-          if (
-            String(item.id) !==
-            String(productId)
-          ) {
+          if (String(item.id) !== String(productId)) {
             return item;
           }
 
           return {
             ...item,
-            quantity:
-              item.quantity + amount,
+            quantity: item.quantity + amount,
           };
         })
-        .filter(
-          (item) =>
-            item.quantity > 0
-        )
+        .filter((item) => item.quantity > 0)
     );
   }
 
-  function removeFromCart(
-    productId
-  ) {
+  function removeFromCart(productId) {
     setCart((current) =>
-      current.filter(
-        (item) =>
-          String(item.id) !==
-          String(productId)
-      )
+      current.filter((item) => String(item.id) !== String(productId))
     );
   }
 
-  function openWhatsApp(
-    message = ""
-  ) {
-    const phone =
-      "5547988254525";
+  function openWhatsApp(message = "") {
+    const phone = "5547988254525";
 
     const text =
       message ||
       "Olá! Gostaria de fazer um pedido na Rosalina Floricultura.";
 
     const url =
-      `https://wa.me/${phone}?text=` +
-      encodeURIComponent(text);
+      `https://wa.me/${phone}?text=` + encodeURIComponent(text);
 
-    window.open(
-      url,
-      "_blank",
-      "noopener,noreferrer"
-    );
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
   function finishOrder() {
@@ -377,142 +303,85 @@ export default function HomeClientes() {
       return;
     }
 
-    const items =
-      cart
-        .map(
-          (item) =>
-            `${item.quantity}x ${item.name} — ${formatCurrency(
-              Number(item.price) *
-                Number(item.quantity)
-            )}`
-        )
-        .join("\n");
+    const items = cart
+      .map(
+        (item) =>
+          `${item.quantity}x ${item.name} — ${formatCurrency(
+            Number(item.price) * Number(item.quantity)
+          )}`
+      )
+      .join("\n");
 
     const message =
       "Olá! Gostaria de fazer este pedido na Rosalina:\n\n" +
       items +
       "\n\n" +
-      `Total dos produtos: ${formatCurrency(
-        cartTotal
-      )}\n\n` +
+      `Total dos produtos: ${formatCurrency(cartTotal)}\n\n` +
       "Gostaria também de verificar o valor da entrega.";
 
     openWhatsApp(message);
   }
 
   function getProductImage(product) {
-    return (
-      product.image ||
-      product.imageUrl ||
-      product.photo ||
-      ""
-    );
+    return product.image || product.imageUrl || product.photo || "";
   }
 
   return (
     <main className="client-home">
-
-      {/* ===================================================
-          HEADER
-      ==================================================== */}
+      {/* HEADER */}
 
       <header className="client-header">
-
         <button
           className="client-logo"
-          onClick={() =>
-            scrollToSection("inicio")
-          }
+          onClick={() => scrollToSection("inicio")}
         >
-          <span className="client-logo-flower">
-            R
-          </span>
+          <span className="client-logo-flower">R</span>
 
           <div>
-            <strong>
-              ROSALINA
-            </strong>
-
-            <span>
-              FLORICULTURA E PRESENTEARIA
-            </span>
+            <strong>ROSALINA</strong>
+            <span>FLORICULTURA E PRESENTEARIA</span>
           </div>
         </button>
 
         <nav
           className={`client-nav ${
-            menuOpen
-              ? "client-nav-open"
-              : ""
+            menuOpen ? "client-nav-open" : ""
           }`}
         >
-          <button
-            onClick={() =>
-              scrollToSection("inicio")
-            }
-          >
+          <button onClick={() => scrollToSection("inicio")}>
             Início
           </button>
 
-          <button
-            onClick={() =>
-              selectCategory("Buquês")
-            }
-          >
+          <button onClick={() => selectCategory("Buquês")}>
             Buquês
           </button>
 
-          <button
-            onClick={() =>
-              selectCategory("Arranjos")
-            }
-          >
+          <button onClick={() => selectCategory("Arranjos")}>
             Arranjos
           </button>
 
-          <button
-            onClick={() =>
-              selectCategory("Combos")
-            }
-          >
+          <button onClick={() => selectCategory("Combos")}>
             Combos
           </button>
 
-          <button
-            onClick={() =>
-              selectCategory("Cestas")
-            }
-          >
+          <button onClick={() => selectCategory("Cestas")}>
             Cestas
           </button>
 
-          <button
-            onClick={() =>
-              scrollToSection(
-                "personalizados"
-              )
-            }
-          >
+          <button onClick={() => scrollToSection("personalizados")}>
             Personalizados
           </button>
 
-          <button
-            onClick={() =>
-              scrollToSection("sobre")
-            }
-          >
+          <button onClick={() => scrollToSection("sobre")}>
             Sobre
           </button>
         </nav>
 
         <div className="client-header-actions">
-
           <button
             className="client-icon-button"
             aria-label="Pesquisar"
-            onClick={() =>
-              scrollToSection("produtos")
-            }
+            onClick={() => scrollToSection("produtos")}
           >
             <Search size={19} />
           </button>
@@ -520,58 +389,34 @@ export default function HomeClientes() {
           <button
             className="client-icon-button client-cart"
             aria-label="Abrir sacola"
-            onClick={() =>
-              setCartOpen(true)
-            }
+            onClick={() => setCartOpen(true)}
           >
             <ShoppingBag size={20} />
-
-            <span>
-              {cartQuantity}
-            </span>
+            <span>{cartQuantity}</span>
           </button>
 
           <button
             className="client-whatsapp-button"
-            onClick={() =>
-              openWhatsApp()
-            }
+            onClick={() => openWhatsApp()}
           >
             <MessageCircle size={18} />
-
             Fazer pedido
           </button>
 
           <button
             className="client-mobile-menu"
             aria-label="Abrir menu"
-            onClick={() =>
-              setMenuOpen(
-                (current) =>
-                  !current
-              )
-            }
+            onClick={() => setMenuOpen((current) => !current)}
           >
-            {menuOpen ? (
-              <X size={22} />
-            ) : (
-              <Menu size={22} />
-            )}
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-
         </div>
       </header>
 
-      {/* ===================================================
-          HERO
-      ==================================================== */}
+      {/* HERO */}
 
-      <section
-        className="client-hero"
-        id="inicio"
-      >
+      <section className="client-hero" id="inicio">
         <div className="hero-main-wrapper">
-
           <img
             src="/assets/home/Card principal.png"
             alt="Rosalina Floricultura e Presentearia"
@@ -579,51 +424,32 @@ export default function HomeClientes() {
           />
 
           <div className="hero-overlay-actions">
-
             <button
               className="hero-catalog-button"
               onClick={() => {
-                setSelectedCategory(
-                  "Todos"
-                );
-
-                scrollToSection(
-                  "produtos"
-                );
+                setSelectedCategory("Todos");
+                scrollToSection("produtos");
               }}
             >
               <Sparkles size={17} />
-
               Ver catálogo
-
               <ArrowRight size={17} />
             </button>
 
             <button
               className="hero-whatsapp-button"
-              onClick={() =>
-                openWhatsApp()
-              }
+              onClick={() => openWhatsApp()}
             >
               <MessageCircle size={18} />
-
               Pedir no WhatsApp
             </button>
-
           </div>
-
         </div>
       </section>
 
-      {/* ===================================================
-          CATEGORIAS
-      ==================================================== */}
+      {/* CATEGORIAS */}
 
-      <section
-        className="client-categories"
-        id="categorias"
-      >
-
+      <section className="client-categories" id="categorias">
         <img
           src="/assets/home/floral left.png"
           alt=""
@@ -637,16 +463,10 @@ export default function HomeClientes() {
         />
 
         <div className="client-section-heading">
-
-          <span>
-            NOSSOS PRODUTOS
-          </span>
+          <span>NOSSOS PRODUTOS</span>
 
           <h2>
-            Escolha a forma de{" "}
-            <em>
-              Presentear
-            </em>
+            Escolha a forma de <em>Presentear</em>
           </h2>
 
           <img
@@ -654,304 +474,156 @@ export default function HomeClientes() {
             alt=""
             className="section-gold-divider"
           />
-
         </div>
 
         <div className="client-category-grid">
-
-          {categories.map(
-            (
-              category,
-              index
-            ) => (
-              <button
-                key={
-                  category.id
-                }
-                className={`client-category ${
-                  selectedCategory ===
-                  category.id
-                    ? "client-category-active"
-                    : ""
-                }`}
-                onClick={() =>
-                  selectCategory(
-                    category.id
-                  )
-                }
-              >
-
-                <div className="client-category-circle">
-
-                  <span>
-                    {String(
-                      index + 1
-                    ).padStart(
-                      2,
-                      "0"
-                    )}
-                  </span>
-
-                  <strong>
-                    {
-                      category.title
-                    }
-                  </strong>
-
-                </div>
-
-                <strong className="client-category-name">
-                  {
-                    category.title
-                  }
-                </strong>
-
-                <span className="client-category-description">
-                  {
-                    category.description
-                  }
+          {categories.map((category, index) => (
+            <button
+              key={category.id}
+              className={`client-category ${
+                selectedCategory === category.id
+                  ? "client-category-active"
+                  : ""
+              }`}
+              onClick={() => selectCategory(category.id)}
+            >
+              <div className="client-category-circle">
+                <span>
+                  {String(index + 1).padStart(2, "0")}
                 </span>
 
-              </button>
-            )
-          )}
+                <strong>{category.title}</strong>
+              </div>
 
+              <strong className="client-category-name">
+                {category.title}
+              </strong>
+
+              <span className="client-category-description">
+                {category.description}
+              </span>
+            </button>
+          ))}
         </div>
       </section>
 
-      {/* ===================================================
-          PRODUTOS
-      ==================================================== */}
+      {/* PRODUTOS */}
 
-      <section
-        className="client-products"
-        id="produtos"
-      >
-
+      <section className="client-products" id="produtos">
         <div className="client-products-content">
-
           <div className="client-products-header">
-
             <div className="client-section-heading client-section-heading-left">
-
-              <span>
-                MAIS ESCOLHIDOS
-              </span>
-
-              <h2>
-                Produtos em destaque
-              </h2>
-
-              <p>
-                Mais escolhidos por quem ama presentear.
-              </p>
-
+              <span>MAIS ESCOLHIDOS</span>
+              <h2>Produtos em destaque</h2>
+              <p>Mais escolhidos por quem ama presentear.</p>
             </div>
 
             <button
               className="client-view-all"
               onClick={() => {
-                setSelectedCategory(
-                  "Todos"
-                );
-
+                setSelectedCategory("Todos");
                 setSearchTerm("");
               }}
             >
               Ver todos os produtos
-
               <ArrowRight size={16} />
             </button>
-
           </div>
 
           <div className="client-product-tools">
-
             <div className="client-product-search">
-
               <Search size={18} />
 
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(event) =>
-                  setSearchTerm(
-                    event.target.value
-                  )
-                }
+                onChange={(event) => setSearchTerm(event.target.value)}
                 placeholder="Buscar produtos..."
               />
-
             </div>
 
             <div className="client-product-filters">
-
               <button
-                className={
-                  selectedCategory ===
-                  "Todos"
-                    ? "active"
-                    : ""
-                }
-                onClick={() =>
-                  setSelectedCategory(
-                    "Todos"
-                  )
-                }
+                className={selectedCategory === "Todos" ? "active" : ""}
+                onClick={() => setSelectedCategory("Todos")}
               >
                 Todos
               </button>
 
-              {categories
-                .slice(0, 4)
-                .map(
-                  (category) => (
-                    <button
-                      key={
-                        category.id
-                      }
-                      className={
-                        selectedCategory ===
-                        category.id
-                          ? "active"
-                          : ""
-                      }
-                      onClick={() =>
-                        setSelectedCategory(
-                          category.id
-                        )
-                      }
-                    >
-                      {
-                        category.title
-                      }
-                    </button>
-                  )
-                )}
-
+              {categories.slice(0, 4).map((category) => (
+                <button
+                  key={category.id}
+                  className={
+                    selectedCategory === category.id ? "active" : ""
+                  }
+                  onClick={() => setSelectedCategory(category.id)}
+                >
+                  {category.title}
+                </button>
+              ))}
             </div>
           </div>
 
-          {filteredProducts.length >
-          0 ? (
-
+          {filteredProducts.length > 0 ? (
             <div className="client-product-grid">
+              {filteredProducts.map((product) => {
+                const image = getProductImage(product);
 
-              {filteredProducts.map(
-                (product) => {
-
-                  const image =
-                    getProductImage(
-                      product
-                    );
-
-                  return (
-                    <article
-                      className="client-product-card"
-                      key={
-                        product.id
-                      }
+                return (
+                  <article
+                    className="client-product-card"
+                    key={product.id}
+                  >
+                    <button
+                      className="client-product-favorite"
+                      aria-label="Favoritar"
                     >
+                      <Heart size={17} />
+                    </button>
 
-                      <button
-                        className="client-product-favorite"
-                        aria-label="Favoritar"
-                      >
-                        <Heart
-                          size={17}
-                        />
-                      </button>
-
-                      {image ? (
-
-                        <div className="client-product-image">
-
-                          <img
-                            src={
-                              image
-                            }
-                            alt={
-                              product.name
-                            }
-                          />
-
-                        </div>
-
-                      ) : (
-
-                        <div className="client-product-image client-product-placeholder">
-
-                          <Sparkles
-                            size={30}
-                          />
-
-                          <span>
-                            ROSALINA
-                          </span>
-
-                        </div>
-
-                      )}
-
-                      <div className="client-product-info">
-
-                        <span className="client-product-category">
-                          {product.category ||
-                            "Rosalina"}
-                        </span>
-
-                        <h3>
-                          {
-                            product.name
-                          }
-                        </h3>
-
-                        <p>
-                          {product.description ||
-                            "Preparado especialmente para transformar sentimentos em momentos inesquecíveis."}
-                        </p>
-
-                        <div className="client-product-bottom">
-
-                          <strong>
-                            {formatCurrency(
-                              product.price
-                            )}
-                          </strong>
-
-                          <button
-                            onClick={() =>
-                              addToCart(
-                                product
-                              )
-                            }
-                          >
-                            <ShoppingBag
-                              size={15}
-                            />
-
-                            Adicionar
-                          </button>
-
-                        </div>
+                    {image ? (
+                      <div className="client-product-image">
+                        <img src={image} alt={product.name} />
                       </div>
+                    ) : (
+                      <div className="client-product-image client-product-placeholder">
+                        <Sparkles size={30} />
+                        <span>ROSALINA</span>
+                      </div>
+                    )}
 
-                    </article>
-                  );
-                }
-              )}
+                    <div className="client-product-info">
+                      <span className="client-product-category">
+                        {product.category || "Rosalina"}
+                      </span>
 
+                      <h3>{product.name}</h3>
+
+                      <p>
+                        {product.description ||
+                          "Preparado especialmente para transformar sentimentos em momentos inesquecíveis."}
+                      </p>
+
+                      <div className="client-product-bottom">
+                        <strong>
+                          {formatCurrency(product.price)}
+                        </strong>
+
+                        <button onClick={() => addToCart(product)}>
+                          <ShoppingBag size={15} />
+                          Adicionar
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
-
           ) : (
-
             <div className="client-products-empty">
-
               <Search size={32} />
 
-              <h3>
-                Nenhum produto encontrado
-              </h3>
+              <h3>Nenhum produto encontrado</h3>
 
               <p>
                 Tente outra busca ou selecione outra categoria.
@@ -960,416 +632,325 @@ export default function HomeClientes() {
               <button
                 onClick={() => {
                   setSearchTerm("");
-
-                  setSelectedCategory(
-                    "Todos"
-                  );
+                  setSelectedCategory("Todos");
                 }}
               >
                 Limpar filtros
               </button>
+            </div>
+          )}
+        </div>
+      </section>
 
+      {/* BENEFÍCIOS, PERSONALIZAÇÃO E GARANTIAS */}
+
+      <div className="rosalina-details">
+        <section
+          className="rd-benefits"
+          aria-label="Diferenciais da Rosalina"
+        >
+          <DetailArt
+            viewBox="0 1113 99 93"
+            className="rd-benefits-leaves"
+          />
+
+          <DetailArt
+            viewBox="869 1113 186 93"
+            className="rd-benefits-roses"
+          />
+
+          <div className="rd-benefits-inner">
+            <div className="rd-benefit">
+              <Truck aria-hidden="true" />
+
+              <div>
+                <h3>
+                  Delivery em
+                  <br />
+                  Jaraguá do Sul
+                </h3>
+
+                <p>
+                  Com todo o cuidado
+                  <br />
+                  que suas flores merecem.
+                </p>
+              </div>
             </div>
 
-          )}
+            <div className="rd-benefit">
+              <Gift aria-hidden="true" />
 
-        </div>
-      </section>
+              <div>
+                <h3>
+                  Presentearia
+                  <br />
+                  completa
+                </h3>
 
-      {/* ===================================================
-          FAIXA DE BENEFÍCIOS
-      ==================================================== */}
+                <p>
+                  Flores, chocolates, pelúcias
+                  <br />
+                  e muito mais.
+                </p>
+              </div>
+            </div>
 
-      <section className="client-benefits-strip">
+            <div className="rd-benefit">
+              <CalendarDays aria-hidden="true" />
 
-        <div className="benefit-item">
+              <div>
+                <h3>
+                  Para todas
+                  <br />
+                  as ocasiões
+                </h3>
 
-          <Truck size={34} />
-
-          <span>
-            <strong>
-              Delivery em Jaraguá do Sul
-            </strong>
-
-            Com todo o cuidado que suas flores merecem.
-          </span>
-
-        </div>
-
-        <div className="benefit-item benefit-highlight">
-
-          <img
-            src="/assets/home/arranjo horizontal.png"
-            alt=""
-            className="benefit-highlight-image"
-          />
-
-          <div className="benefit-highlight-card">
-
-            <Gift size={34} />
-
-            <span>
-              <strong>
-                Presentearia completa
-              </strong>
-
-              Flores, chocolates, mimos e muito mais.
-            </span>
-
+                <p>
+                  Aniversários, datas especiais,
+                  <br />
+                  romances e muito mais.
+                </p>
+              </div>
+            </div>
           </div>
+        </section>
 
-        </div>
-
-        <div className="benefit-item">
-
-          <CalendarDays size={34} />
-
-          <span>
-            <strong>
-              Para todas as ocasiões
-            </strong>
-
-            Aniversários, datas especiais e romances.
-          </span>
-
-        </div>
-
-      </section>
-
-      {/* ===================================================
-          PERSONALIZADOS
-      ==================================================== */}
-
-      <section
-        className="client-custom"
-        id="personalizados"
-      >
-
-        <img
-          src="/assets/home/floral left.png"
-          alt=""
-          className="custom-foliage-left"
-        />
-
-        <img
-          src="/assets/home/petalas rosa.png"
-          alt=""
-          className="custom-petals"
-        />
-
-        <div className="client-custom-bouquet">
-
+        <div className="rd-personalization">
           <img
-            src="/assets/home/buque 2.png"
-            alt="Buquê personalizado Rosalina"
+  src="/assets/home/buque-personalizado.png"
+  alt="Buquê Rosalina com rosas vermelhas e lírios cor-de-rosa"
+  className="rd-art rd-bouquet"
+/>
+
+          <DetailArt
+            viewBox="981 1208 74 202"
+            className="rd-personalization-edge"
           />
 
-        </div>
-
-        <div className="client-custom-copy">
-
-          <span className="client-eyebrow">
-            BUQUÊS PERSONALIZADOS
-          </span>
-
-          <h2>
-            Monte do seu jeito
-
-            <Heart
-              size={24}
-              strokeWidth={1.4}
-            />
-          </h2>
-
-          <p>
-            Escolha suas flores preferidas, as cores, o tamanho e os
-            complementos. Criamos um buquê único, do seu jeito, para tornar
-            seu momento ainda mais especial.
-          </p>
-
-          <button
-            className="client-primary-button"
-            onClick={() =>
-              openWhatsApp(
-                "Olá! Gostaria de montar um buquê personalizado com a Rosalina."
-              )
-            }
+          <section
+            className="rd-custom"
+            id="personalizados"
+            aria-labelledby="rd-custom-title"
           >
-            <MessageCircle
-              size={18}
-            />
+            <div className="rd-custom-copy">
+              <p className="rd-eyebrow">
+                BUQUÊS PERSONALIZADOS
+              </p>
 
-            Fazer meu buquê personalizado
+              <div className="rd-custom-heading">
+                <h2 id="rd-custom-title">
+                  Monte do seu jeito
+                </h2>
 
-            <ArrowRight
-              size={16}
-            />
-          </button>
+                <svg
+                  className="rd-flourish"
+                  viewBox="0 0 95 38"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path d="M2 32C14 36 24 26 27 18C34 6 26 3 23 12C18 2 10 8 17 19C30 39 53 27 92 3" />
+                </svg>
+              </div>
 
-        </div>
+              <p className="rd-custom-description">
+                Escolha suas flores preferidas, as cores, o tamanho e
+                os complementos. Criamos um buquê único, do seu jeito,
+                para tornar seu momento ainda mais especial.
+              </p>
 
-        <div className="client-custom-steps">
+              <button
+                className="rd-custom-button"
+                onClick={() =>
+                  openWhatsApp(
+                    "Olá! Gostaria de montar um buquê personalizado com a Rosalina."
+                  )
+                }
+              >
+                <MessageCircle aria-hidden="true" />
 
-          <div>
-            <span>01</span>
+                <span>
+                  Fazer meu buquê personalizado
+                </span>
 
-            <strong>
-              Você escolhe
-            </strong>
+                <ArrowRight aria-hidden="true" />
+              </button>
+            </div>
 
-            <small>
-              as flores
-            </small>
-          </div>
+            <ol
+              className="rd-steps"
+              aria-label="Como montamos seu buquê"
+            >
+              <li>
+                <Flower2 aria-hidden="true" />
+                <p>
+                  Você escolhe
+                  <br />
+                  as flores
+                </p>
+              </li>
 
-          <div>
-            <span>02</span>
+              <li>
+                <Palette aria-hidden="true" />
+                <p>
+                  Definimos
+                  <br />
+                  a paleta de cores
+                </p>
+              </li>
 
-            <strong>
-              Definimos
-            </strong>
+              <li>
+                <Gift aria-hidden="true" />
+                <p>
+                  Adicionamos
+                  <br />
+                  complementos especiais
+                </p>
+              </li>
 
-            <small>
-              a paleta de cores
-            </small>
-          </div>
+              <li>
+                <Heart aria-hidden="true" />
+                <p>
+                  Criamos um buquê
+                  <br />
+                  único para você
+                </p>
+              </li>
+            </ol>
+          </section>
 
-          <div>
-            <span>03</span>
-
-            <strong>
-              Adicionamos
-            </strong>
-
-            <small>
-              complementos especiais
-            </small>
-          </div>
-
-          <div>
-            <span>04</span>
-
-            <strong>
-              Criamos
-            </strong>
-
-            <small>
-              algo único para você
-            </small>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ===================================================
-          GARANTIAS
-      ==================================================== */}
-
-      <section
-        className="client-trust"
-        id="sobre"
-      >
-
-        <div>
-          <span>◇</span>
-
-          <strong>
-            Qualidade garantida
-          </strong>
-
-          <small>
-            em todas as flores
-          </small>
-        </div>
-
-        <div>
-          <span>❧</span>
-
-          <strong>
-            Embalagem especial
-          </strong>
-
-          <small>
-            feita com carinho
-          </small>
-        </div>
-
-        <div>
-          <Heart size={24} />
-
-          <strong>
-            Atendimento personalizado
-          </strong>
-
-          <small>
-            para cada momento
-          </small>
-        </div>
-
-        <div>
-          <span>☆</span>
-
-          <strong>
-            Momentos especiais
-          </strong>
-
-          <small>
-            criados pela Rosalina
-          </small>
-        </div>
-
-      </section>
-
-      {/* ===================================================
-          FOOTER
-      ==================================================== */}
-
-      <footer className="client-footer">
-
-        <div className="client-footer-brand">
-
-          <div className="client-footer-logo">
-
-            <span className="client-logo-flower">
-              R
-            </span>
+          <section
+            className="rd-trust"
+            id="sobre"
+            aria-label="Nosso cuidado em cada pedido"
+          >
+            <div>
+              <Gem aria-hidden="true" />
+              <p>
+                Qualidade garantida
+                <br />
+                em todas as flores
+              </p>
+            </div>
 
             <div>
-              <strong>
-                ROSALINA
-              </strong>
-
-              <span>
-                FLORICULTURA E PRESENTEARIA
-              </span>
+              <Leaf aria-hidden="true" />
+              <p>
+                Embalagem especial
+                <br />
+                feita com carinho
+              </p>
             </div>
 
+            <div>
+              <Heart aria-hidden="true" />
+              <p>
+                Atendimento
+                <br />
+                personalizado
+              </p>
+            </div>
+
+            <div>
+              <Star aria-hidden="true" />
+              <p>
+                Momentos especiais
+                <br />
+                criados pela Rosalina
+              </p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      {/* FOOTER */}
+
+      <footer className="client-footer">
+        <div className="client-footer-brand">
+          <div className="client-footer-logo">
+            <span className="client-logo-flower">R</span>
+
+            <div>
+              <strong>ROSALINA</strong>
+              <span>FLORICULTURA E PRESENTEARIA</span>
+            </div>
           </div>
 
-          <p>
-            Onde sentimentos ganham flores.
-          </p>
-
+          <p>Onde sentimentos ganham flores.</p>
         </div>
 
         <div className="client-footer-contact">
-
           <div>
-
-            <span className="footer-social-symbol">
-              ◎
-            </span>
+            <span className="footer-social-symbol">◎</span>
 
             <span>
-              <strong>
-                @rosalinafloricultura_jaragua
-              </strong>
-
+              <strong>@rosalinafloricultura_jaragua</strong>
               Acompanhe nossas criações
             </span>
-
           </div>
 
           <div>
-
             <MessageCircle size={22} />
 
             <span>
-              <strong>
-                (47) 98825-4525
-              </strong>
-
+              <strong>(47) 98825-4525</strong>
               Fale conosco pelo WhatsApp
             </span>
-
           </div>
 
           <div>
-
             <MapPin size={22} />
 
             <span>
-              <strong>
-                Jaraguá do Sul - SC
-              </strong>
-
+              <strong>Jaraguá do Sul - SC</strong>
               Atendemos toda a região
             </span>
-
           </div>
-
         </div>
       </footer>
 
-      {/* ===================================================
-          OVERLAY SACOLA
-      ==================================================== */}
+      {/* OVERLAY SACOLA */}
 
       <div
         className={`cart-overlay ${
-          cartOpen
-            ? "cart-overlay-open"
-            : ""
+          cartOpen ? "cart-overlay-open" : ""
         }`}
-        onClick={() =>
-          setCartOpen(false)
-        }
+        onClick={() => setCartOpen(false)}
       />
 
-      {/* ===================================================
-          SACOLA
-      ==================================================== */}
+      {/* SACOLA */}
 
       <aside
         className={`cart-drawer ${
-          cartOpen
-            ? "cart-drawer-open"
-            : ""
+          cartOpen ? "cart-drawer-open" : ""
         }`}
       >
-
         <div className="cart-header">
-
           <div>
-            <span>
-              SEU PEDIDO
-            </span>
-
-            <h2>
-              Sacola
-            </h2>
+            <span>SEU PEDIDO</span>
+            <h2>Sacola</h2>
           </div>
 
           <button
-            onClick={() =>
-              setCartOpen(false)
-            }
+            onClick={() => setCartOpen(false)}
             aria-label="Fechar sacola"
           >
             <X size={21} />
           </button>
-
         </div>
 
         <div className="cart-content">
-
           {cart.length === 0 ? (
-
             <div className="cart-empty">
-
               <img
                 src="/assets/home/arranjo coração.png"
                 alt=""
                 className="cart-heart-decoration"
               />
 
-              <ShoppingBag
-                size={37}
-              />
+              <ShoppingBag size={37} />
 
-              <h3>
-                Sua sacola está vazia
-              </h3>
+              <h3>Sua sacola está vazia</h3>
 
               <p>
                 Escolha um produto especial para começar seu pedido.
@@ -1378,168 +959,78 @@ export default function HomeClientes() {
               <button
                 onClick={() => {
                   setCartOpen(false);
-
-                  scrollToSection(
-                    "produtos"
-                  );
+                  scrollToSection("produtos");
                 }}
               >
                 Ver produtos
               </button>
-
             </div>
-
           ) : (
+            cart.map((item) => {
+              const image = getProductImage(item);
 
-            cart.map(
-              (item) => {
-
-                const image =
-                  getProductImage(
-                    item
-                  );
-
-                return (
-                  <div
-                    className="cart-item"
-                    key={
-                      item.id
-                    }
-                  >
-
-                    <div className="cart-item-image">
-
-                      {image ? (
-
-                        <img
-                          src={
-                            image
-                          }
-                          alt={
-                            item.name
-                          }
-                        />
-
-                      ) : (
-
-                        <Sparkles
-                          size={22}
-                        />
-
-                      )}
-
-                    </div>
-
-                    <div className="cart-item-info">
-
-                      <strong>
-                        {item.name}
-                      </strong>
-
-                      <span>
-                        {formatCurrency(
-                          item.price
-                        )}
-                      </span>
-
-                      <div className="cart-item-controls">
-
-                        <button
-                          onClick={() =>
-                            changeQuantity(
-                              item.id,
-                              -1
-                            )
-                          }
-                        >
-                          <Minus
-                            size={14}
-                          />
-                        </button>
-
-                        <span>
-                          {
-                            item.quantity
-                          }
-                        </span>
-
-                        <button
-                          onClick={() =>
-                            changeQuantity(
-                              item.id,
-                              1
-                            )
-                          }
-                        >
-                          <Plus
-                            size={14}
-                          />
-                        </button>
-
-                        <button
-                          className="cart-remove"
-                          onClick={() =>
-                            removeFromCart(
-                              item.id
-                            )
-                          }
-                        >
-                          <Trash2
-                            size={15}
-                          />
-                        </button>
-
-                      </div>
-
-                    </div>
-
+              return (
+                <div className="cart-item" key={item.id}>
+                  <div className="cart-item-image">
+                    {image ? (
+                      <img src={image} alt={item.name} />
+                    ) : (
+                      <Sparkles size={22} />
+                    )}
                   </div>
-                );
-              }
-            )
 
+                  <div className="cart-item-info">
+                    <strong>{item.name}</strong>
+
+                    <span>{formatCurrency(item.price)}</span>
+
+                    <div className="cart-item-controls">
+                      <button
+                        onClick={() => changeQuantity(item.id, -1)}
+                      >
+                        <Minus size={14} />
+                      </button>
+
+                      <span>{item.quantity}</span>
+
+                      <button
+                        onClick={() => changeQuantity(item.id, 1)}
+                      >
+                        <Plus size={14} />
+                      </button>
+
+                      <button
+                        className="cart-remove"
+                        onClick={() => removeFromCart(item.id)}
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
           )}
-
         </div>
 
         {cart.length > 0 && (
-
           <div className="cart-footer">
-
             <div>
-              <span>
-                Total dos produtos
-              </span>
-
-              <strong>
-                {formatCurrency(
-                  cartTotal
-                )}
-              </strong>
+              <span>Total dos produtos</span>
+              <strong>{formatCurrency(cartTotal)}</strong>
             </div>
 
             <small>
               O valor da entrega será combinado durante o atendimento.
             </small>
 
-            <button
-              onClick={
-                finishOrder
-              }
-            >
-              <MessageCircle
-                size={18}
-              />
-
+            <button onClick={finishOrder}>
+              <MessageCircle size={18} />
               Finalizar pelo WhatsApp
             </button>
-
           </div>
-
         )}
-
       </aside>
-
     </main>
   );
 }
