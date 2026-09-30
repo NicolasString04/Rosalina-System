@@ -598,18 +598,35 @@
   color: #a66734;
 }
 
+/* =========================================================
+   IMAGEM DO PRODUTO — CENTRALIZADA
+========================================================= */
+
 .client-product-image {
   width: 100%;
-  height: 185px;
+  height: 210px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   overflow: hidden;
-  background: linear-gradient(145deg, #e5d4bc, #f6ebda);
+
+  padding: 10px;
+
+  background: #f8f3ea;
+
+  border-bottom: 1px solid rgba(201, 157, 84, 0.16);
 }
 
 .client-product-image img {
   width: 100%;
   height: 100%;
+
   display: block;
-  object-fit: cover;
+
+  object-fit: contain;
+  object-position: center center;
 }
 
 .client-product-placeholder {
@@ -2164,5 +2181,354 @@
 
   .client-home section[id] {
     scroll-margin-top: 102px;
+  }
+}
+
+/* =========================================================
+   LOGO ROSALINA — AJUSTE FINAL
+========================================================= */
+
+/* HEADER */
+
+.client-header {
+  padding-left: 24px;
+}
+
+.client-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 14px;
+
+  margin-right: 38px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  cursor: pointer;
+}
+
+/* CÍRCULO */
+
+.client-logo-flower {
+  width: 64px;
+  height: 64px;
+
+  flex: 0 0 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+
+  overflow: hidden;
+
+  padding: 4px;
+
+  border: 1.5px solid #cda85d;
+  border-radius: 50%;
+
+  background: #063f32;
+
+  color: transparent;
+
+  box-shadow:
+    0 0 0 3px rgba(205, 168, 93, 0.04);
+}
+
+/* IMAGEM DENTRO DO CÍRCULO */
+
+.client-logo-mark {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: contain;
+  object-position: center;
+
+  border-radius: 50%;
+}
+
+/* TEXTO DA MARCA */
+
+.client-logo-text {
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  min-width: max-content;
+}
+
+.client-logo-text strong {
+  margin: 0;
+
+  font-family:
+    "Cormorant Garamond",
+    Georgia,
+    serif;
+
+  font-size: 1.75rem;
+
+  font-weight: 600;
+
+  line-height: 0.9;
+
+  letter-spacing: 0.11em;
+
+  color: #e8c678;
+}
+
+.client-logo-text span {
+  margin-top: 7px;
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size: 0.46rem;
+
+  font-weight: 500;
+
+  letter-spacing: 0.16em;
+
+  color: rgba(240, 211, 151, 0.82);
+}
+
+/* =========================================================
+   LOGO DO RODAPÉ
+========================================================= */
+
+.client-footer-brand {
+  align-items: flex-start;
+  justify-content: center;
+
+  text-align: left;
+}
+
+.client-footer-logo {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+}
+
+.client-footer-logo-circle {
+  width: 68px;
+  height: 68px;
+
+  flex-basis: 68px;
+}
+
+.client-footer-logo .client-logo-text strong {
+  font-size: 1.65rem;
+}
+
+.client-footer-logo .client-logo-text span {
+  font-size: 0.43rem;
+}
+
+.client-footer-brand p {
+  margin-top: 9px;
+  margin-left: 82px;
+
+  color: rgba(255, 245, 216, 0.68);
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 950px) {
+  .client-header {
+    padding-left: 18px;
+  }
+
+  .client-logo {
+    gap: 10px;
+    margin-right: auto;
+  }
+
+  .client-logo-flower {
+    width: 58px;
+    height: 58px;
+
+    flex-basis: 58px;
+  }
+
+  .client-logo-text strong {
+    font-size: 1.5rem;
+  }
+
+  .client-logo-text span {
+    font-size: 0.4rem;
+  }
+}
+
+/* =========================================================
+   CELULAR
+========================================================= */
+
+@media (max-width: 650px) {
+  .client-header {
+    padding-left: 12px;
+  }
+
+  .client-logo-flower {
+    width: 52px;
+    height: 52px;
+
+    flex-basis: 52px;
+  }
+
+  .client-logo-text strong {
+    font-size: 1.25rem;
+  }
+
+  .client-logo-text span {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 0.34rem;
+
+    letter-spacing: 0.1em;
+  }
+
+  .client-footer-logo-circle {
+    width: 60px;
+    height: 60px;
+
+    flex-basis: 60px;
+  }
+
+  .client-footer-brand p {
+    margin-left: 74px;
+  }
+}
+
+/* =========================================================
+   FOOTER — LOGO MAIOR
+========================================================= */
+
+.client-footer-logo-circle {
+  width: 92px;
+  height: 92px;
+
+  flex: 0 0 92px;
+
+  padding: 5px;
+}
+
+.client-footer-logo .client-logo-mark {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  transform: scale(1.08);
+}
+
+.client-footer-logo {
+  gap: 18px;
+}
+
+.client-footer-logo .client-logo-text strong {
+  font-size: 1.8rem;
+}
+
+.client-footer-logo .client-logo-text span {
+  margin-top: 6px;
+
+  font-size: 0.45rem;
+}
+
+.client-footer-brand p {
+  margin-top: 10px;
+  margin-left: 110px;
+}
+
+@media (max-width: 650px) {
+  .client-footer-logo-circle {
+    width: 76px;
+    height: 76px;
+
+    flex-basis: 76px;
+  }
+
+  .client-footer-brand p {
+    margin-left: 94px;
+  }
+}
+
+/* =========================================================
+   FOOTER — MAIS COMPACTO
+========================================================= */
+
+.client-footer {
+  min-height: 0;
+
+  padding:
+    16px
+    clamp(
+      32px,
+      6vw,
+      95px
+    );
+}
+
+/* mantém a logo grande, mas um pouco mais controlada */
+
+.client-footer-logo-circle {
+  width: 82px;
+  height: 82px;
+
+  flex: 0 0 82px;
+}
+
+.client-footer-logo {
+  gap: 15px;
+}
+
+/* aproxima a frase da marca */
+
+.client-footer-brand p {
+  margin-top: 4px;
+  margin-left: 97px;
+
+  line-height: 1.2;
+}
+
+/* reduz um pouco o espaço vertical interno dos contatos */
+
+.client-footer-contact > div {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+/* MOBILE */
+
+@media (max-width: 650px) {
+  .client-footer {
+    padding:
+      18px
+      22px;
+  }
+
+  .client-footer-logo-circle {
+    width: 70px;
+    height: 70px;
+
+    flex-basis: 70px;
+  }
+
+  .client-footer-brand p {
+    margin-left: 85px;
   }
 }

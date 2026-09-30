@@ -23,7 +23,9 @@ import {
   X,
 } from "lucide-react";
 
-/* PRODUTOS PADRÃO */
+/* =========================================================
+   PRODUTOS PADRÃO
+========================================================= */
 
 const fallbackProducts = [
   {
@@ -31,6 +33,7 @@ const fallbackProducts = [
     name: "Buquê Van Gogh",
     category: "Buquês",
     price: 56.9,
+    image: "/assets/home/buque-van-gogh.png",
     description:
       "Girassol, margaridas e flores selecionadas em uma composição especial.",
     status: "active",
@@ -40,6 +43,7 @@ const fallbackProducts = [
     name: "Combo Cone Singular",
     category: "Combos",
     price: 29.9,
+    image: "/assets/home/combo-cone-singular.png",
     description:
       "Flor especial acompanhada de presente e embalagem exclusiva.",
     status: "active",
@@ -49,31 +53,56 @@ const fallbackProducts = [
     name: "Combo Doce Carinho",
     category: "Combos",
     price: 44.9,
+    image: "/assets/home/combo-doce-carinho.png",
     description:
       "Flores, chocolates e carinho em uma composição feita para surpreender.",
     status: "active",
   },
   {
     id: "fallback-4",
+    name: "Combo Amor que Encanta",
+    category: "Combos",
+    price: 49.9,
+    image: "/assets/home/combo-amor-que-encanta.png",
+    description:
+      "Um combo romântico com flores e chocolates para momentos especiais.",
+    status: "active",
+  },
+  {
+    id: "fallback-5",
+    name: "Cesta Carinho Especial",
+    category: "Cestas",
+    price: 109.9,
+    image: "/assets/home/cesta-carinho-especial.png",
+    description:
+      "Cesta delicada com flores, mimos e chocolates para encantar.",
+    status: "active",
+  },
+  {
+    id: "fallback-6",
     name: "Arranjo Encanto",
     category: "Arranjos",
     price: 62,
+    image: "/assets/home/arranjo-encanto.png",
     description:
       "Flores do campo e espécies selecionadas para todos os momentos.",
     status: "active",
   },
   {
-    id: "fallback-5",
+    id: "fallback-7",
     name: "Arranjo Premium",
     category: "Arranjos",
-    price: 109.9,
+    price: 119.9,
+    image: "/assets/home/arranjo-premium.png",
     description:
       "Flores selecionadas e complementos especiais em uma composição elegante.",
     status: "active",
   },
 ];
 
-/* CATEGORIAS */
+/* =========================================================
+   CATEGORIAS
+========================================================= */
 
 const categories = [
   {
@@ -103,6 +132,45 @@ const categories = [
   },
 ];
 
+/* =========================================================
+   IMAGENS DOS PRODUTOS
+========================================================= */
+
+const productImageMap = [
+  {
+    match: "buque van gogh",
+    image: "/assets/home/buque-van-gogh.png",
+  },
+  {
+    match: "combo cone singular",
+    image: "/assets/home/combo-cone-singular.png",
+  },
+  {
+    match: "combo doce carinho",
+    image: "/assets/home/combo-doce-carinho.png",
+  },
+  {
+    match: "combo amor que encanta",
+    image: "/assets/home/combo-amor-que-encanta.png",
+  },
+  {
+    match: "cesta carinho especial",
+    image: "/assets/home/cesta-carinho-especial.png",
+  },
+  {
+    match: "arranjo encanto",
+    image: "/assets/home/arranjo-encanto.png",
+  },
+  {
+    match: "arranjo premium",
+    image: "/assets/home/arranjo-premium.png",
+  },
+];
+
+/* =========================================================
+   NORMALIZAÇÃO
+========================================================= */
+
 function normalizeCategory(value = "") {
   return String(value)
     .normalize("NFD")
@@ -111,7 +179,18 @@ function normalizeCategory(value = "") {
     .toLowerCase();
 }
 
-/* RECORTES DECORATIVOS DO ESBOÇO */
+function normalizeText(value = "") {
+  return String(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
+/* =========================================================
+   RECORTES DECORATIVOS DO ESBOÇO
+========================================================= */
 
 function DetailArt({ viewBox, className, label }) {
   return (
@@ -140,7 +219,9 @@ export default function HomeClientes() {
   const [cartOpen, setCartOpen] = useState(false);
   const [cart, setCart] = useState([]);
 
-  /* PRODUTOS */
+  /* =======================================================
+     PRODUTOS
+  ======================================================= */
 
   const products = useMemo(() => {
     try {
@@ -160,13 +241,17 @@ export default function HomeClientes() {
         (product) => product.status !== "inactive"
       );
 
-      return activeProducts.length ? activeProducts : fallbackProducts;
+      return activeProducts.length
+        ? activeProducts
+        : fallbackProducts;
     } catch {
       return fallbackProducts;
     }
   }, []);
 
-  /* FILTROS */
+  /* =======================================================
+     FILTROS
+  ======================================================= */
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -174,13 +259,22 @@ export default function HomeClientes() {
       const selected = normalizeCategory(selectedCategory);
 
       const matchesCategory =
-        selectedCategory === "Todos" || category === selected;
+        selectedCategory === "Todos" ||
+        category === selected;
 
       const search = searchTerm.trim().toLowerCase();
 
-      const name = String(product.name || "").toLowerCase();
-      const description = String(product.description || "").toLowerCase();
-      const productCategory = String(product.category || "").toLowerCase();
+      const name = String(
+        product.name || ""
+      ).toLowerCase();
+
+      const description = String(
+        product.description || ""
+      ).toLowerCase();
+
+      const productCategory = String(
+        product.category || ""
+      ).toLowerCase();
 
       const matchesSearch =
         search === "" ||
@@ -190,22 +284,33 @@ export default function HomeClientes() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [products, selectedCategory, searchTerm]);
+  }, [
+    products,
+    selectedCategory,
+    searchTerm,
+  ]);
 
-  /* SACOLA */
+  /* =======================================================
+     SACOLA
+  ======================================================= */
 
   const cartQuantity = cart.reduce(
-    (total, item) => total + Number(item.quantity || 0),
+    (total, item) =>
+      total + Number(item.quantity || 0),
     0
   );
 
   const cartTotal = cart.reduce(
     (total, item) =>
-      total + Number(item.price || 0) * Number(item.quantity || 0),
+      total +
+      Number(item.price || 0) *
+        Number(item.quantity || 0),
     0
   );
 
-  /* HELPERS */
+  /* =======================================================
+     HELPERS
+  ======================================================= */
 
   function formatCurrency(value) {
     return new Intl.NumberFormat("pt-BR", {
@@ -215,10 +320,12 @@ export default function HomeClientes() {
   }
 
   function scrollToSection(id) {
-    document.getElementById(id)?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    document
+      .getElementById(id)
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
 
     setMenuOpen(false);
   }
@@ -235,15 +342,19 @@ export default function HomeClientes() {
   function addToCart(product) {
     setCart((current) => {
       const existing = current.find(
-        (item) => String(item.id) === String(product.id)
+        (item) =>
+          String(item.id) ===
+          String(product.id)
       );
 
       if (existing) {
         return current.map((item) =>
-          String(item.id) === String(product.id)
+          String(item.id) ===
+          String(product.id)
             ? {
                 ...item,
-                quantity: item.quantity + 1,
+                quantity:
+                  item.quantity + 1,
               }
             : item
         );
@@ -265,22 +376,33 @@ export default function HomeClientes() {
     setCart((current) =>
       current
         .map((item) => {
-          if (String(item.id) !== String(productId)) {
+          if (
+            String(item.id) !==
+            String(productId)
+          ) {
             return item;
           }
 
           return {
             ...item,
-            quantity: item.quantity + amount,
+            quantity:
+              item.quantity + amount,
           };
         })
-        .filter((item) => item.quantity > 0)
+        .filter(
+          (item) =>
+            item.quantity > 0
+        )
     );
   }
 
   function removeFromCart(productId) {
     setCart((current) =>
-      current.filter((item) => String(item.id) !== String(productId))
+      current.filter(
+        (item) =>
+          String(item.id) !==
+          String(productId)
+      )
     );
   }
 
@@ -292,9 +414,14 @@ export default function HomeClientes() {
       "Olá! Gostaria de fazer um pedido na Rosalina Floricultura.";
 
     const url =
-      `https://wa.me/${phone}?text=` + encodeURIComponent(text);
+      `https://wa.me/${phone}?text=` +
+      encodeURIComponent(text);
 
-    window.open(url, "_blank", "noopener,noreferrer");
+    window.open(
+      url,
+      "_blank",
+      "noopener,noreferrer"
+    );
   }
 
   function finishOrder() {
@@ -307,7 +434,8 @@ export default function HomeClientes() {
       .map(
         (item) =>
           `${item.quantity}x ${item.name} — ${formatCurrency(
-            Number(item.price) * Number(item.quantity)
+            Number(item.price) *
+              Number(item.quantity)
           )}`
       )
       .join("\n");
@@ -316,63 +444,137 @@ export default function HomeClientes() {
       "Olá! Gostaria de fazer este pedido na Rosalina:\n\n" +
       items +
       "\n\n" +
-      `Total dos produtos: ${formatCurrency(cartTotal)}\n\n` +
+      `Total dos produtos: ${formatCurrency(
+        cartTotal
+      )}\n\n` +
       "Gostaria também de verificar o valor da entrega.";
 
     openWhatsApp(message);
   }
 
+  /*
+   * Primeiro tenta utilizar uma imagem cadastrada diretamente
+   * no produto.
+   *
+   * Caso o produto venha do localStorage antigo sem imagem,
+   * identifica pelo nome e utiliza a imagem correspondente.
+   */
   function getProductImage(product) {
-    return product.image || product.imageUrl || product.photo || "";
+    const directImage =
+      product.image ||
+      product.imageUrl ||
+      product.photo ||
+      product.img ||
+      product.thumbnail ||
+      "";
+
+    if (directImage) {
+      return directImage;
+    }
+
+    const normalizedName =
+      normalizeText(product.name);
+
+    const matchedProduct =
+      productImageMap.find((item) =>
+        normalizedName.includes(item.match)
+      );
+
+    return matchedProduct?.image || "";
   }
 
   return (
     <main className="client-home">
-      {/* HEADER */}
+      {/* ===================================================
+          HEADER
+      ==================================================== */}
 
       <header className="client-header">
         <button
           className="client-logo"
-          onClick={() => scrollToSection("inicio")}
+          onClick={() =>
+            scrollToSection("inicio")
+          }
         >
-          <span className="client-logo-flower">R</span>
+          <span className="client-logo-flower">
+            <img
+              src="/assets/home/logo-rosalina.png"
+              alt=""
+              className="client-logo-mark"
+            />
+          </span>
 
-          <div>
+          <div className="client-logo-text">
             <strong>ROSALINA</strong>
-            <span>FLORICULTURA E PRESENTEARIA</span>
+
+            <span>
+              FLORICULTURA E PRESENTEARIA
+            </span>
           </div>
         </button>
 
         <nav
           className={`client-nav ${
-            menuOpen ? "client-nav-open" : ""
+            menuOpen
+              ? "client-nav-open"
+              : ""
           }`}
         >
-          <button onClick={() => scrollToSection("inicio")}>
+          <button
+            onClick={() =>
+              scrollToSection("inicio")
+            }
+          >
             Início
           </button>
 
-          <button onClick={() => selectCategory("Buquês")}>
+          <button
+            onClick={() =>
+              selectCategory("Buquês")
+            }
+          >
             Buquês
           </button>
 
-          <button onClick={() => selectCategory("Arranjos")}>
+          <button
+            onClick={() =>
+              selectCategory("Arranjos")
+            }
+          >
             Arranjos
           </button>
 
-          <button onClick={() => selectCategory("Combos")}>
+          <button
+            onClick={() =>
+              selectCategory("Combos")
+            }
+          >
             Combos
           </button>
 
-          <button onClick={() => selectCategory("Cestas")}>
+          <button
+            onClick={() =>
+              selectCategory("Cestas")
+            }
+          >
             Cestas
           </button>
 
-          <button onClick={() => scrollToSection("personalizados")}>
+          <button
+            onClick={() =>
+              scrollToSection(
+                "personalizados"
+              )
+            }
+          >
             Personalizados
           </button>
 
-          <button onClick={() => scrollToSection("sobre")}>
+          <button
+            onClick={() =>
+              scrollToSection("sobre")
+            }
+          >
             Sobre
           </button>
         </nav>
@@ -381,7 +583,9 @@ export default function HomeClientes() {
           <button
             className="client-icon-button"
             aria-label="Pesquisar"
-            onClick={() => scrollToSection("produtos")}
+            onClick={() =>
+              scrollToSection("produtos")
+            }
           >
             <Search size={19} />
           </button>
@@ -389,33 +593,57 @@ export default function HomeClientes() {
           <button
             className="client-icon-button client-cart"
             aria-label="Abrir sacola"
-            onClick={() => setCartOpen(true)}
+            onClick={() =>
+              setCartOpen(true)
+            }
           >
             <ShoppingBag size={20} />
-            <span>{cartQuantity}</span>
+
+            <span>
+              {cartQuantity}
+            </span>
           </button>
 
           <button
             className="client-whatsapp-button"
-            onClick={() => openWhatsApp()}
+            onClick={() =>
+              openWhatsApp()
+            }
           >
-            <MessageCircle size={18} />
+            <MessageCircle
+              size={18}
+            />
+
             Fazer pedido
           </button>
 
           <button
             className="client-mobile-menu"
             aria-label="Abrir menu"
-            onClick={() => setMenuOpen((current) => !current)}
+            onClick={() =>
+              setMenuOpen(
+                (current) =>
+                  !current
+              )
+            }
           >
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            {menuOpen ? (
+              <X size={22} />
+            ) : (
+              <Menu size={22} />
+            )}
           </button>
         </div>
       </header>
 
-      {/* HERO */}
+      {/* ===================================================
+          HERO
+      ==================================================== */}
 
-      <section className="client-hero" id="inicio">
+      <section
+        className="client-hero"
+        id="inicio"
+      >
         <div className="hero-main-wrapper">
           <img
             src="/assets/home/Card principal.png"
@@ -427,29 +655,44 @@ export default function HomeClientes() {
             <button
               className="hero-catalog-button"
               onClick={() => {
-                setSelectedCategory("Todos");
-                scrollToSection("produtos");
+                setSelectedCategory(
+                  "Todos"
+                );
+
+                scrollToSection(
+                  "produtos"
+                );
               }}
             >
               <Sparkles size={17} />
+
               Ver catálogo
+
               <ArrowRight size={17} />
             </button>
 
             <button
               className="hero-whatsapp-button"
-              onClick={() => openWhatsApp()}
+              onClick={() =>
+                openWhatsApp()
+              }
             >
               <MessageCircle size={18} />
+
               Pedir no WhatsApp
             </button>
           </div>
         </div>
       </section>
 
-      {/* CATEGORIAS */}
+      {/* ===================================================
+          CATEGORIAS
+      ==================================================== */}
 
-      <section className="client-categories" id="categorias">
+      <section
+        className="client-categories"
+        id="categorias"
+      >
         <img
           src="/assets/home/floral left.png"
           alt=""
@@ -463,10 +706,13 @@ export default function HomeClientes() {
         />
 
         <div className="client-section-heading">
-          <span>NOSSOS PRODUTOS</span>
+          <span>
+            NOSSOS PRODUTOS
+          </span>
 
           <h2>
-            Escolha a forma de <em>Presentear</em>
+            Escolha a forma de{" "}
+            <em>Presentear</em>
           </h2>
 
           <img
@@ -477,55 +723,88 @@ export default function HomeClientes() {
         </div>
 
         <div className="client-category-grid">
-          {categories.map((category, index) => (
-            <button
-              key={category.id}
-              className={`client-category ${
-                selectedCategory === category.id
-                  ? "client-category-active"
-                  : ""
-              }`}
-              onClick={() => selectCategory(category.id)}
-            >
-              <div className="client-category-circle">
-                <span>
-                  {String(index + 1).padStart(2, "0")}
+          {categories.map(
+            (category, index) => (
+              <button
+                key={category.id}
+                className={`client-category ${
+                  selectedCategory ===
+                  category.id
+                    ? "client-category-active"
+                    : ""
+                }`}
+                onClick={() =>
+                  selectCategory(
+                    category.id
+                  )
+                }
+              >
+                <div className="client-category-circle">
+                  <span>
+                    {String(
+                      index + 1
+                    ).padStart(
+                      2,
+                      "0"
+                    )}
+                  </span>
+
+                  <strong>
+                    {category.title}
+                  </strong>
+                </div>
+
+                <strong className="client-category-name">
+                  {category.title}
+                </strong>
+
+                <span className="client-category-description">
+                  {
+                    category.description
+                  }
                 </span>
-
-                <strong>{category.title}</strong>
-              </div>
-
-              <strong className="client-category-name">
-                {category.title}
-              </strong>
-
-              <span className="client-category-description">
-                {category.description}
-              </span>
-            </button>
-          ))}
+              </button>
+            )
+          )}
         </div>
       </section>
 
-      {/* PRODUTOS */}
+      {/* ===================================================
+          PRODUTOS
+      ==================================================== */}
 
-      <section className="client-products" id="produtos">
+      <section
+        className="client-products"
+        id="produtos"
+      >
         <div className="client-products-content">
           <div className="client-products-header">
             <div className="client-section-heading client-section-heading-left">
-              <span>MAIS ESCOLHIDOS</span>
-              <h2>Produtos em destaque</h2>
-              <p>Mais escolhidos por quem ama presentear.</p>
+              <span>
+                MAIS ESCOLHIDOS
+              </span>
+
+              <h2>
+                Produtos em destaque
+              </h2>
+
+              <p>
+                Mais escolhidos por quem ama presentear.
+              </p>
             </div>
 
             <button
               className="client-view-all"
               onClick={() => {
-                setSelectedCategory("Todos");
+                setSelectedCategory(
+                  "Todos"
+                );
+
                 setSearchTerm("");
               }}
             >
               Ver todos os produtos
+
               <ArrowRight size={16} />
             </button>
           </div>
@@ -537,93 +816,152 @@ export default function HomeClientes() {
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
+                onChange={(event) =>
+                  setSearchTerm(
+                    event.target.value
+                  )
+                }
                 placeholder="Buscar produtos..."
               />
             </div>
 
             <div className="client-product-filters">
               <button
-                className={selectedCategory === "Todos" ? "active" : ""}
-                onClick={() => setSelectedCategory("Todos")}
+                className={
+                  selectedCategory ===
+                  "Todos"
+                    ? "active"
+                    : ""
+                }
+                onClick={() =>
+                  setSelectedCategory(
+                    "Todos"
+                  )
+                }
               >
                 Todos
               </button>
 
-              {categories.slice(0, 4).map((category) => (
-                <button
-                  key={category.id}
-                  className={
-                    selectedCategory === category.id ? "active" : ""
-                  }
-                  onClick={() => setSelectedCategory(category.id)}
-                >
-                  {category.title}
-                </button>
-              ))}
+              {categories
+                .slice(0, 4)
+                .map(
+                  (category) => (
+                    <button
+                      key={
+                        category.id
+                      }
+                      className={
+                        selectedCategory ===
+                        category.id
+                          ? "active"
+                          : ""
+                      }
+                      onClick={() =>
+                        setSelectedCategory(
+                          category.id
+                        )
+                      }
+                    >
+                      {
+                        category.title
+                      }
+                    </button>
+                  )
+                )}
             </div>
           </div>
 
           {filteredProducts.length > 0 ? (
             <div className="client-product-grid">
-              {filteredProducts.map((product) => {
-                const image = getProductImage(product);
+              {filteredProducts.map(
+                (product) => {
+                  const image =
+                    getProductImage(
+                      product
+                    );
 
-                return (
-                  <article
-                    className="client-product-card"
-                    key={product.id}
-                  >
-                    <button
-                      className="client-product-favorite"
-                      aria-label="Favoritar"
+                  return (
+                    <article
+                      className="client-product-card"
+                      key={product.id}
                     >
-                      <Heart size={17} />
-                    </button>
+                      <button
+                        className="client-product-favorite"
+                        aria-label="Favoritar"
+                      >
+                        <Heart size={17} />
+                      </button>
 
-                    {image ? (
-                      <div className="client-product-image">
-                        <img src={image} alt={product.name} />
+                      {image ? (
+                        <div className="client-product-image">
+                          <img
+                            src={image}
+                            alt={
+                              product.name
+                            }
+                          />
+                        </div>
+                      ) : (
+                        <div className="client-product-image client-product-placeholder">
+                          <Sparkles
+                            size={30}
+                          />
+
+                          <span>
+                            ROSALINA
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="client-product-info">
+                        <span className="client-product-category">
+                          {product.category ||
+                            "Rosalina"}
+                        </span>
+
+                        <h3>
+                          {product.name}
+                        </h3>
+
+                        <p>
+                          {product.description ||
+                            "Preparado especialmente para transformar sentimentos em momentos inesquecíveis."}
+                        </p>
+
+                        <div className="client-product-bottom">
+                          <strong>
+                            {formatCurrency(
+                              product.price
+                            )}
+                          </strong>
+
+                          <button
+                            onClick={() =>
+                              addToCart(
+                                product
+                              )
+                            }
+                          >
+                            <ShoppingBag
+                              size={15}
+                            />
+
+                            Adicionar
+                          </button>
+                        </div>
                       </div>
-                    ) : (
-                      <div className="client-product-image client-product-placeholder">
-                        <Sparkles size={30} />
-                        <span>ROSALINA</span>
-                      </div>
-                    )}
-
-                    <div className="client-product-info">
-                      <span className="client-product-category">
-                        {product.category || "Rosalina"}
-                      </span>
-
-                      <h3>{product.name}</h3>
-
-                      <p>
-                        {product.description ||
-                          "Preparado especialmente para transformar sentimentos em momentos inesquecíveis."}
-                      </p>
-
-                      <div className="client-product-bottom">
-                        <strong>
-                          {formatCurrency(product.price)}
-                        </strong>
-
-                        <button onClick={() => addToCart(product)}>
-                          <ShoppingBag size={15} />
-                          Adicionar
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
+                    </article>
+                  );
+                }
+              )}
             </div>
           ) : (
             <div className="client-products-empty">
               <Search size={32} />
 
-              <h3>Nenhum produto encontrado</h3>
+              <h3>
+                Nenhum produto encontrado
+              </h3>
 
               <p>
                 Tente outra busca ou selecione outra categoria.
@@ -632,7 +970,10 @@ export default function HomeClientes() {
               <button
                 onClick={() => {
                   setSearchTerm("");
-                  setSelectedCategory("Todos");
+
+                  setSelectedCategory(
+                    "Todos"
+                  );
                 }}
               >
                 Limpar filtros
@@ -642,7 +983,9 @@ export default function HomeClientes() {
         </div>
       </section>
 
-      {/* BENEFÍCIOS, PERSONALIZAÇÃO E GARANTIAS */}
+      {/* ===================================================
+          BENEFÍCIOS, PERSONALIZAÇÃO E GARANTIAS
+      ==================================================== */}
 
       <div className="rosalina-details">
         <section
@@ -690,14 +1033,15 @@ export default function HomeClientes() {
 
                 <p>
                   Flores, chocolates, pelúcias
-                  <br />
-                  e muito mais.
+                  <br />e muito mais.
                 </p>
               </div>
             </div>
 
             <div className="rd-benefit">
-              <CalendarDays aria-hidden="true" />
+              <CalendarDays
+                aria-hidden="true"
+              />
 
               <div>
                 <h3>
@@ -718,10 +1062,10 @@ export default function HomeClientes() {
 
         <div className="rd-personalization">
           <img
-  src="/assets/home/buque-personalizado.png"
-  alt="Buquê Rosalina com rosas vermelhas e lírios cor-de-rosa"
-  className="rd-art rd-bouquet"
-/>
+            src="/assets/home/buque-personalizado.png"
+            alt="Buquê Rosalina com rosas vermelhas e lírios cor-de-rosa"
+            className="rd-art rd-bouquet"
+          />
 
           <DetailArt
             viewBox="981 1208 74 202"
@@ -767,13 +1111,17 @@ export default function HomeClientes() {
                   )
                 }
               >
-                <MessageCircle aria-hidden="true" />
+                <MessageCircle
+                  aria-hidden="true"
+                />
 
                 <span>
                   Fazer meu buquê personalizado
                 </span>
 
-                <ArrowRight aria-hidden="true" />
+                <ArrowRight
+                  aria-hidden="true"
+                />
               </button>
             </div>
 
@@ -782,7 +1130,10 @@ export default function HomeClientes() {
               aria-label="Como montamos seu buquê"
             >
               <li>
-                <Flower2 aria-hidden="true" />
+                <Flower2
+                  aria-hidden="true"
+                />
+
                 <p>
                   Você escolhe
                   <br />
@@ -791,7 +1142,10 @@ export default function HomeClientes() {
               </li>
 
               <li>
-                <Palette aria-hidden="true" />
+                <Palette
+                  aria-hidden="true"
+                />
+
                 <p>
                   Definimos
                   <br />
@@ -800,7 +1154,10 @@ export default function HomeClientes() {
               </li>
 
               <li>
-                <Gift aria-hidden="true" />
+                <Gift
+                  aria-hidden="true"
+                />
+
                 <p>
                   Adicionamos
                   <br />
@@ -809,7 +1166,10 @@ export default function HomeClientes() {
               </li>
 
               <li>
-                <Heart aria-hidden="true" />
+                <Heart
+                  aria-hidden="true"
+                />
+
                 <p>
                   Criamos um buquê
                   <br />
@@ -826,6 +1186,7 @@ export default function HomeClientes() {
           >
             <div>
               <Gem aria-hidden="true" />
+
               <p>
                 Qualidade garantida
                 <br />
@@ -835,6 +1196,7 @@ export default function HomeClientes() {
 
             <div>
               <Leaf aria-hidden="true" />
+
               <p>
                 Embalagem especial
                 <br />
@@ -844,6 +1206,7 @@ export default function HomeClientes() {
 
             <div>
               <Heart aria-hidden="true" />
+
               <p>
                 Atendimento
                 <br />
@@ -853,6 +1216,7 @@ export default function HomeClientes() {
 
             <div>
               <Star aria-hidden="true" />
+
               <p>
                 Momentos especiais
                 <br />
@@ -863,28 +1227,48 @@ export default function HomeClientes() {
         </div>
       </div>
 
-      {/* FOOTER */}
+      {/* ===================================================
+          FOOTER
+      ==================================================== */}
 
       <footer className="client-footer">
         <div className="client-footer-brand">
           <div className="client-footer-logo">
-            <span className="client-logo-flower">R</span>
+            <span className="client-logo-flower client-footer-logo-circle">
+              <img
+                src="/assets/home/logo-rosalina.png"
+                alt=""
+                className="client-logo-mark"
+              />
+            </span>
 
-            <div>
-              <strong>ROSALINA</strong>
-              <span>FLORICULTURA E PRESENTEARIA</span>
+            <div className="client-logo-text">
+              <strong>
+                ROSALINA
+              </strong>
+
+              <span>
+                FLORICULTURA E PRESENTEARIA
+              </span>
             </div>
           </div>
 
-          <p>Onde sentimentos ganham flores.</p>
+          <p>
+            Onde sentimentos ganham flores.
+          </p>
         </div>
 
         <div className="client-footer-contact">
           <div>
-            <span className="footer-social-symbol">◎</span>
+            <span className="footer-social-symbol">
+              ◎
+            </span>
 
             <span>
-              <strong>@rosalinafloricultura_jaragua</strong>
+              <strong>
+                @rosalinafloricultura_jaragua
+              </strong>
+
               Acompanhe nossas criações
             </span>
           </div>
@@ -893,7 +1277,10 @@ export default function HomeClientes() {
             <MessageCircle size={22} />
 
             <span>
-              <strong>(47) 98825-4525</strong>
+              <strong>
+                (47) 98825-4525
+              </strong>
+
               Fale conosco pelo WhatsApp
             </span>
           </div>
@@ -902,37 +1289,57 @@ export default function HomeClientes() {
             <MapPin size={22} />
 
             <span>
-              <strong>Jaraguá do Sul - SC</strong>
+              <strong>
+                Jaraguá do Sul - SC
+              </strong>
+
               Atendemos toda a região
             </span>
           </div>
         </div>
       </footer>
 
-      {/* OVERLAY SACOLA */}
+      {/* ===================================================
+          OVERLAY SACOLA
+      ==================================================== */}
 
       <div
         className={`cart-overlay ${
-          cartOpen ? "cart-overlay-open" : ""
+          cartOpen
+            ? "cart-overlay-open"
+            : ""
         }`}
-        onClick={() => setCartOpen(false)}
+        onClick={() =>
+          setCartOpen(false)
+        }
       />
 
-      {/* SACOLA */}
+      {/* ===================================================
+          SACOLA
+      ==================================================== */}
 
       <aside
         className={`cart-drawer ${
-          cartOpen ? "cart-drawer-open" : ""
+          cartOpen
+            ? "cart-drawer-open"
+            : ""
         }`}
       >
         <div className="cart-header">
           <div>
-            <span>SEU PEDIDO</span>
-            <h2>Sacola</h2>
+            <span>
+              SEU PEDIDO
+            </span>
+
+            <h2>
+              Sacola
+            </h2>
           </div>
 
           <button
-            onClick={() => setCartOpen(false)}
+            onClick={() =>
+              setCartOpen(false)
+            }
             aria-label="Fechar sacola"
           >
             <X size={21} />
@@ -950,7 +1357,9 @@ export default function HomeClientes() {
 
               <ShoppingBag size={37} />
 
-              <h3>Sua sacola está vazia</h3>
+              <h3>
+                Sua sacola está vazia
+              </h3>
 
               <p>
                 Escolha um produto especial para começar seu pedido.
@@ -959,7 +1368,10 @@ export default function HomeClientes() {
               <button
                 onClick={() => {
                   setCartOpen(false);
-                  scrollToSection("produtos");
+
+                  scrollToSection(
+                    "produtos"
+                  );
                 }}
               >
                 Ver produtos
@@ -967,43 +1379,76 @@ export default function HomeClientes() {
             </div>
           ) : (
             cart.map((item) => {
-              const image = getProductImage(item);
+              const image =
+                getProductImage(item);
 
               return (
-                <div className="cart-item" key={item.id}>
+                <div
+                  className="cart-item"
+                  key={item.id}
+                >
                   <div className="cart-item-image">
                     {image ? (
-                      <img src={image} alt={item.name} />
+                      <img
+                        src={image}
+                        alt={item.name}
+                      />
                     ) : (
-                      <Sparkles size={22} />
+                      <Sparkles
+                        size={22}
+                      />
                     )}
                   </div>
 
                   <div className="cart-item-info">
-                    <strong>{item.name}</strong>
+                    <strong>
+                      {item.name}
+                    </strong>
 
-                    <span>{formatCurrency(item.price)}</span>
+                    <span>
+                      {formatCurrency(
+                        item.price
+                      )}
+                    </span>
 
                     <div className="cart-item-controls">
                       <button
-                        onClick={() => changeQuantity(item.id, -1)}
+                        onClick={() =>
+                          changeQuantity(
+                            item.id,
+                            -1
+                          )
+                        }
                       >
                         <Minus size={14} />
                       </button>
 
-                      <span>{item.quantity}</span>
+                      <span>
+                        {item.quantity}
+                      </span>
 
                       <button
-                        onClick={() => changeQuantity(item.id, 1)}
+                        onClick={() =>
+                          changeQuantity(
+                            item.id,
+                            1
+                          )
+                        }
                       >
                         <Plus size={14} />
                       </button>
 
                       <button
                         className="cart-remove"
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() =>
+                          removeFromCart(
+                            item.id
+                          )
+                        }
                       >
-                        <Trash2 size={15} />
+                        <Trash2
+                          size={15}
+                        />
                       </button>
                     </div>
                   </div>
@@ -1016,16 +1461,28 @@ export default function HomeClientes() {
         {cart.length > 0 && (
           <div className="cart-footer">
             <div>
-              <span>Total dos produtos</span>
-              <strong>{formatCurrency(cartTotal)}</strong>
+              <span>
+                Total dos produtos
+              </span>
+
+              <strong>
+                {formatCurrency(
+                  cartTotal
+                )}
+              </strong>
             </div>
 
             <small>
               O valor da entrega será combinado durante o atendimento.
             </small>
 
-            <button onClick={finishOrder}>
-              <MessageCircle size={18} />
+            <button
+              onClick={finishOrder}
+            >
+              <MessageCircle
+                size={18}
+              />
+
               Finalizar pelo WhatsApp
             </button>
           </div>
